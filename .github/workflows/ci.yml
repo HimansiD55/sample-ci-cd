@@ -1,29 +1,38 @@
-name: Simple CI
+name: CI-CD Demo
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Get the code
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-      # Step 2: Setup Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.x'
 
-      # Step 3: Install dependencies
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+        run: pip install pytest
 
-      # Step 4: Run tests
       - name: Run tests
-        run: pytest -q
+        run: pytest
+
+  deploy:
+    needs: build-and-test   # Run only if build-and-test succeeds
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Simulate Deployment
+        run: |
+          echo "Deployment successful at $(date)" > deployment.txt
+
+      - name: Upload Deployment Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-log
+          path: deployment.txt
 
