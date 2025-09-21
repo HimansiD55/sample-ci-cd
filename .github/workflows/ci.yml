@@ -6,10 +6,10 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4   # Latest version
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -20,18 +20,17 @@ jobs:
         run: pytest
 
   deploy:
-    needs: build-and-test   # Run only if build-and-test succeeds
+    needs: build-and-test   # Only runs if tests succeed
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Simulate Deployment
         run: |
           echo "Deployment successful at $(date)" > deployment.txt
 
       - name: Upload Deployment Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: deployment-log
           path: deployment.txt
